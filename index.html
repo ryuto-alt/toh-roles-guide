@@ -57,7 +57,7 @@
         </div>
         <div class="shine rounded-xl border border-slate-800 p-4">
           <div class="text-xs text-slate-400">陣営分類</div>
-          <div class="text-xl font-bold mt-1">4 種</div>
+          <div class="text-xl font-bold mt-1">5 種</div>
         </div>
       </div>
     </div>
@@ -76,6 +76,7 @@
         <button data-faction="crew"      class="filter-btn px-3 py-2 rounded-lg border border-cyan-900/60 bg-cyan-950/40 text-cyan-200 text-sm font-medium hover:border-cyan-500 transition">クルー</button>
         <button data-faction="neutral"   class="filter-btn px-3 py-2 rounded-lg border border-violet-900/60 bg-violet-950/40 text-violet-200 text-sm font-medium hover:border-violet-500 transition">ニュートラル</button>
         <button data-faction="attribute" class="filter-btn px-3 py-2 rounded-lg border border-amber-900/60 bg-amber-950/40 text-amber-200 text-sm font-medium hover:border-amber-500 transition">属性</button>
+        <button data-faction="special"   class="filter-btn px-3 py-2 rounded-lg border border-emerald-900/60 bg-emerald-950/40 text-emerald-200 text-sm font-medium hover:border-emerald-500 transition">特殊</button>
       </div>
     </div>
   </section>
@@ -107,10 +108,11 @@
 
   <script>
     const FACTIONS = {
-      impostor:  { label: 'インポスター陣営',    image: 'images/impostor.png',  accent: 'red',    desc: '勝利条件: クルーを人数以下にする。キル権限と通気口使用が基本能力。' },
-      crew:      { label: 'クルー陣営',          image: 'images/crew.png',      accent: 'cyan',   desc: '勝利条件: タスク完了またはインポスター追放。多くはキル不可、情報系能力が中心。' },
-      neutral:   { label: 'ニュートラル陣営',    image: 'images/neutral.png',   accent: 'violet', desc: '第三勢力。独自の勝利条件を持ち、クルーにもインポスターにも属さない。' },
-      attribute: { label: '属性 (サブ役職)',      image: 'images/attribute.png', accent: 'amber',  desc: '通常役職に重ねて付与される追加効果。陣営は変わらない。' },
+      impostor:  { label: 'インポスター陣営',    image: 'images/impostor.png',  accent: 'red',     desc: '勝利条件: クルーを人数以下にする。キル権限と通気口使用が基本能力。' },
+      crew:      { label: 'クルー陣営',          image: 'images/crew.png',      accent: 'cyan',    desc: '勝利条件: タスク完了またはインポスター追放。多くはキル不可、情報系能力が中心。' },
+      neutral:   { label: 'ニュートラル陣営',    image: 'images/neutral.png',   accent: 'violet',  desc: '第三勢力。独自の勝利条件を持ち、クルーにもインポスターにも属さない。' },
+      attribute: { label: '属性 (サブ役職)',      image: 'images/attribute.png', accent: 'amber',   desc: '通常役職に重ねて付与される追加効果。陣営は変わらない。' },
+      special:   { label: '特殊役職',             image: 'images/special.png',   accent: 'emerald', desc: 'ホスト専用のオブザーバー役職。ゲームに影響を与えず観戦のみを行う。' },
     };
 
     const ROLES = [
@@ -164,6 +166,8 @@
       { f:'attribute', n:'恋人',                       d:'2人に付与。双方生存で勝利、片方死亡でもう片方も後追い死亡。' },
       { f:'attribute', n:'ウォッチャー',               d:'会議中、全員の投票先を閲覧できる。' },
       { f:'attribute', n:'ワークホース',               d:'最初にタスク完了したクルーに付与。追加タスクが割り当てられる。' },
+
+      { f:'special', n:'GM (ゲームマスター)',          d:'ホスト専用のオブザーバー役職。必ずホストに割り当てられ、開始時点から幽霊状態。ゲームに影響を与えず全員から正体が見える。' },
     ];
 
     const ACCENTS = {
@@ -171,6 +175,7 @@
       cyan:   { border:'border-cyan-800/60',   badge:'bg-cyan-500/15 text-cyan-300 border-cyan-500/30',    tag:'bg-cyan-500' },
       violet: { border:'border-violet-800/60', badge:'bg-violet-500/15 text-violet-300 border-violet-500/30', tag:'bg-violet-500' },
       amber:  { border:'border-amber-800/60',  badge:'bg-amber-500/15 text-amber-300 border-amber-500/30', tag:'bg-amber-500' },
+      emerald:{ border:'border-emerald-800/60',badge:'bg-emerald-500/15 text-emerald-300 border-emerald-500/30', tag:'bg-emerald-500' },
     };
 
     const sectionsEl = document.getElementById('sections');
