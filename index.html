@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TownOfHost 役職ガイド — Among Us MOD早見表</title>
+  <meta name="description" content="Among Us本家TOH (TownOfHost) 全役職を陣営別に整理した日本語早見表。会議で使えるMOD解説ガイド。" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { color-scheme: dark; }
+    body { font-family: 'Inter', 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', system-ui, sans-serif; }
+    .fade-in { animation: fade .4s ease-out both; }
+    @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    .shine { background: linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,0)); }
+    .role-card { transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
+    .role-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.4); }
+    .faction-hero { position: relative; overflow: hidden; border-radius: 1rem; }
+    .faction-hero img { width: 100%; height: 100%; object-fit: cover; }
+    .faction-hero .overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,23,42,0) 40%, rgba(15,23,42,.95) 100%); }
+    .faction-hero .label { position: absolute; left: 1.5rem; bottom: 1rem; right: 1.5rem; }
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+  <header class="relative overflow-hidden border-b border-slate-800">
+    <div class="absolute inset-0 opacity-20" style="background: radial-gradient(circle at 20% 30%, #ef4444 0%, transparent 40%), radial-gradient(circle at 80% 70%, #3b82f6 0%, transparent 40%), radial-gradient(circle at 50% 50%, #a855f7 0%, transparent 50%);"></div>
+    <div class="relative max-w-6xl mx-auto px-6 py-14 md:py-20">
+      <div class="flex items-center gap-2 text-xs uppercase tracking-widest text-slate-400 mb-3">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        Among Us Host MOD
+      </div>
+      <h1 class="text-4xl md:text-6xl font-black tracking-tight">
+        TownOfHost<br />
+        <span class="bg-gradient-to-r from-red-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">役職ガイド</span>
+      </h1>
+      <p class="mt-4 text-slate-300 text-lg max-w-2xl">
+        本家 TOH (tukasa0001/TownOfHost) の全役職を<strong class="text-white">陣営別</strong>に整理した日本語早見表。
+        会議で「どのMODのどの役職か」を即座に共有できます。
+      </p>
+
+      <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl">
+        <div class="shine rounded-xl border border-slate-800 p-4">
+          <div class="text-xs text-slate-400">MODバージョン</div>
+          <div class="text-xl font-bold mt-1">v5.1.14</div>
+        </div>
+        <div class="shine rounded-xl border border-slate-800 p-4">
+          <div class="text-xs text-slate-400">対応 Among Us</div>
+          <div class="text-xl font-bold mt-1">Ver 17.0.0+</div>
+        </div>
+        <div class="shine rounded-xl border border-slate-800 p-4">
+          <div class="text-xs text-slate-400">役職総数</div>
+          <div class="text-xl font-bold mt-1" id="stat-total">—</div>
+        </div>
+        <div class="shine rounded-xl border border-slate-800 p-4">
+          <div class="text-xs text-slate-400">陣営分類</div>
+          <div class="text-xl font-bold mt-1">4 種</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="sticky top-0 z-30 backdrop-blur-lg bg-slate-950/80 border-b border-slate-800">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row gap-3 items-stretch md:items-center">
+      <div class="relative flex-1">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-4.3-4.3M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16z"/></svg>
+        <input id="search" type="search" placeholder="役職名・能力で検索 (例: キル、タスク、変身)"
+               class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20" />
+      </div>
+      <div id="filter-buttons" class="flex gap-2 flex-wrap">
+        <button data-faction="all"       class="filter-btn px-3 py-2 rounded-lg border border-slate-700 bg-slate-900 text-sm font-medium hover:border-slate-500 transition">すべて</button>
+        <button data-faction="impostor"  class="filter-btn px-3 py-2 rounded-lg border border-red-900/60 bg-red-950/40 text-red-200 text-sm font-medium hover:border-red-500 transition">インポスター</button>
+        <button data-faction="crew"      class="filter-btn px-3 py-2 rounded-lg border border-cyan-900/60 bg-cyan-950/40 text-cyan-200 text-sm font-medium hover:border-cyan-500 transition">クルー</button>
+        <button data-faction="neutral"   class="filter-btn px-3 py-2 rounded-lg border border-violet-900/60 bg-violet-950/40 text-violet-200 text-sm font-medium hover:border-violet-500 transition">ニュートラル</button>
+        <button data-faction="attribute" class="filter-btn px-3 py-2 rounded-lg border border-amber-900/60 bg-amber-950/40 text-amber-200 text-sm font-medium hover:border-amber-500 transition">属性</button>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-6xl mx-auto px-6 py-10 space-y-14" id="sections"></main>
+
+  <div id="empty" class="hidden max-w-6xl mx-auto px-6 py-16 text-center">
+    <div class="text-6xl mb-4">🛸</div>
+    <div class="text-xl font-bold">該当する役職がありません</div>
+    <div class="text-slate-400 mt-2">検索語を変えるか、フィルタを「すべて」に戻してください。</div>
+  </div>
+
+  <footer class="border-t border-slate-800 mt-20">
+    <div class="max-w-6xl mx-auto px-6 py-10 text-sm text-slate-400 space-y-3">
+      <div class="flex flex-wrap gap-x-4 gap-y-2">
+        <a class="hover:text-white underline" href="https://github.com/tukasa0001/TownOfHost" target="_blank" rel="noopener">公式リポジトリ (tukasa0001/TownOfHost)</a>
+        <a class="hover:text-white underline" href="https://github.com/tukasa0001/TownOfHost/releases" target="_blank" rel="noopener">最新リリース</a>
+        <a class="hover:text-white underline" href="https://among-us.fandom.com/wiki/Mod:Town_Of_Host" target="_blank" rel="noopener">Fandom Wiki</a>
+      </div>
+      <div>
+        画像は OpenAI <code class="bg-slate-800 px-1.5 py-0.5 rounded">gpt-image-1</code> により生成。
+        役職情報はTOH本家 README から抽出（2026年4月時点）。
+      </div>
+      <div class="text-xs text-slate-500">
+        ※ 派生MOD (TOH-K / TOH_Y / TOHE 等) には独自の追加役職があります。本ガイドは本家TOHに準拠します。
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const FACTIONS = {
+      impostor:  { label: 'インポスター陣営',    image: 'images/impostor.png',  accent: 'red',    desc: '勝利条件: クルーを人数以下にする。キル権限と通気口使用が基本能力。' },
+      crew:      { label: 'クルー陣営',          image: 'images/crew.png',      accent: 'cyan',   desc: '勝利条件: タスク完了またはインポスター追放。多くはキル不可、情報系能力が中心。' },
+      neutral:   { label: 'ニュートラル陣営',    image: 'images/neutral.png',   accent: 'violet', desc: '第三勢力。独自の勝利条件を持ち、クルーにもインポスターにも属さない。' },
+      attribute: { label: '属性 (サブ役職)',      image: 'images/attribute.png', accent: 'amber',  desc: '通常役職に重ねて付与される追加効果。陣営は変わらない。' },
+    };
+
+    const ROLES = [
+      { f:'impostor', n:'バウンティハンター',         d:'表示されたターゲットをキルするとキルクールが短縮、他者をキルするとクールが延長。' },
+      { f:'impostor', n:'イビルハッカー',             d:'会議開始時にアドミン情報を受信。インポスターと死体の位置が把握できる。' },
+      { f:'impostor', n:'イビルトラッカー',           d:'インポスター位置への矢印表示。変身でターゲットを継続追跡できる。' },
+      { f:'impostor', n:'花火職人',                   d:'シェイプシフトで最大3個の花火を設置。最後のインポスターになった時、一斉起爆可能。' },
+      { f:'impostor', n:'インサイダー',               d:'キルした相手の役職を知ることができる。' },
+      { f:'impostor', n:'メアー',                     d:'通常はキル不可だが、停電中のみ速度上昇＋キルクール短縮でキル可能。' },
+      { f:'impostor', n:'ネコカボチャ',               d:'キルされると、自分を殺したプレイヤーを道連れにできる。' },
+      { f:'impostor', n:'ペンギン',                   d:'キルボタンで対象を引き摺る。タイマー終了で実際にキル成立。' },
+      { f:'impostor', n:'パペッティア',               d:'自分ではキルできない。対象に最も近いクルーをキルさせる操り人形能力。' },
+      { f:'impostor', n:'シリアルキラー',             d:'キルクールが極めて短い代わりに自殺タイマーあり。継続的なキルが必要。' },
+      { f:'impostor', n:'シェイプマスター',           d:'変身後のクールダウンを無視して即再変身可能。' },
+      { f:'impostor', n:'スナイパー',                 d:'シェイプシフト地点と解除地点を結ぶ射線上のターゲットをキル。' },
+      { f:'impostor', n:'ステルス',                   d:'キル実行で、同じ部屋にいるプレイヤー全員の視界をゼロにする。' },
+      { f:'impostor', n:'タイムシーフ',               d:'プレイヤーをキルするたびに次の会議時間が減少する。' },
+      { f:'impostor', n:'ヴァンパイア',               d:'キルボタン押下から一定時間後に実際のキルが発生する遅延キル。' },
+      { f:'impostor', n:'ウォーロック',               d:'変身前にキルした相手に呪いを付与。変身時、呪われた相手が最寄りの人をキルする。' },
+      { f:'impostor', n:'魔女',                       d:'キルモードとスペルモードを切替可能。会議で呪印付きプレイヤーを死亡させる。' },
+      { f:'impostor', n:'マフィア',                   d:'初期状態ではキル不可。他のインポスターが全滅するとキル権限が有効化。' },
+      { f:'impostor', n:'マッドメイト',               d:'インポスター陣営に属するが正体は隠匿。通気口使用可。' },
+      { f:'impostor', n:'マッドガーディアン',         d:'インポスター陣営。タスクを全て完了するとキルされなくなる。' },
+      { f:'impostor', n:'マッドスニッチ',             d:'インポスター陣営。タスク完了でインポスターの位置を認識できる。' },
+      { f:'impostor', n:'サイドキックマッドメイト',   d:'シェイプシフター系に変身された際、最も近いプレイヤーが指名される特殊挙動。' },
+
+      { f:'crew', n:'ベイト',                         d:'キルされた時、自分を殺したプレイヤーに強制的に死体を通報させる。' },
+      { f:'crew', n:'ディクテーター',                 d:'会議中に投票すると会議を強制終了し、投票先を追放。ただし本人は死亡する。' },
+      { f:'crew', n:'ドクター',                       d:'プレイヤーの死因を把握。遠隔でバイタルを確認できる。' },
+      { f:'crew', n:'ライター',                       d:'タスク完了または進捗率に応じて自分の視界が広がる。' },
+      { f:'crew', n:'メイヤー',                       d:'複数票を保持。まとめて1人またはスキップに投票可能。' },
+      { f:'crew', n:'サボタージュマスター',           d:'サボタージュを高速修理。一部は複数箇所を同時に修理できる。' },
+      { f:'crew', n:'シーア',                         d:'プレイヤーの死亡の瞬間を感知できる。' },
+      { f:'crew', n:'シェリフ',                       d:'人外をキル可能。ただしクルーをキルすると自分が死亡。' },
+      { f:'crew', n:'スニッチ',                       d:'タスク完了でキル可能人外の名前色が変化、矢印で位置を把握。' },
+      { f:'crew', n:'スピードブースター',             d:'規定タスク完了で、生存している誰かの移動速度を上げる。' },
+      { f:'crew', n:'トラッパー',                     d:'キルされると、殺した相手を数秒間移動不可にする。' },
+      { f:'crew', n:'タイムマネージャー',             d:'タスクを完了するたびに会議時間が延長される。' },
+
+      { f:'neutral', n:'アーソニスト',                d:'近くのプレイヤーにオイルを塗る。全員塗った後にベント入室で単独勝利。' },
+      { f:'neutral', n:'エゴイスト',                  d:'インポスター全滅後、インポスターの勝利条件を達成して勝利する。' },
+      { f:'neutral', n:'エクスキューショナー',        d:'ターゲットが投票で追放されたら単独勝利。' },
+      { f:'neutral', n:'ジャッカル',                  d:'インポスター全滅後、クルー以上の人数を確保して勝利。' },
+      { f:'neutral', n:'ジェスター',                  d:'投票で追放されたら単独勝利。' },
+      { f:'neutral', n:'オポチュニスト',              d:'ゲーム終了時に生き残っていれば勝利扱い。' },
+      { f:'neutral', n:'ペスト医師',                  d:'キルで初期感染者を作成。接近で感染を広げ、全員感染で勝利。' },
+      { f:'neutral', n:'テロリスト',                  d:'タスクを全て完了した後に死亡すると単独勝利。' },
+      { f:'neutral', n:'シュレディンガーの猫',        d:'キルされると陣営が変化。変化後の陣営の勝利条件に従う。' },
+
+      { f:'attribute', n:'ラストインポスター',         d:'最後のインポスターに自動付与される属性。キルクールが短縮される。' },
+      { f:'attribute', n:'恋人',                       d:'2人に付与。双方生存で勝利、片方死亡でもう片方も後追い死亡。' },
+      { f:'attribute', n:'ウォッチャー',               d:'会議中、全員の投票先を閲覧できる。' },
+      { f:'attribute', n:'ワークホース',               d:'最初にタスク完了したクルーに付与。追加タスクが割り当てられる。' },
+    ];
+
+    const ACCENTS = {
+      red:    { border:'border-red-800/60',    badge:'bg-red-500/15 text-red-300 border-red-500/30',       tag:'bg-red-500' },
+      cyan:   { border:'border-cyan-800/60',   badge:'bg-cyan-500/15 text-cyan-300 border-cyan-500/30',    tag:'bg-cyan-500' },
+      violet: { border:'border-violet-800/60', badge:'bg-violet-500/15 text-violet-300 border-violet-500/30', tag:'bg-violet-500' },
+      amber:  { border:'border-amber-800/60',  badge:'bg-amber-500/15 text-amber-300 border-amber-500/30', tag:'bg-amber-500' },
+    };
+
+    const sectionsEl = document.getElementById('sections');
+    const searchEl = document.getElementById('search');
+    const emptyEl = document.getElementById('empty');
+    let activeFaction = 'all';
+
+    document.getElementById('stat-total').textContent = ROLES.length;
+
+    function escapeHtml(s) {
+      return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    }
+
+    function highlight(text, q) {
+      if (!q) return escapeHtml(text);
+      const escaped = escapeHtml(text);
+      const safeQ = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return escaped.replace(new RegExp(safeQ, 'gi'), m => `<mark class="bg-yellow-300/30 text-yellow-200 rounded px-0.5">${m}</mark>`);
+    }
+
+    function render() {
+      const q = searchEl.value.trim().toLowerCase();
+      sectionsEl.innerHTML = '';
+      let totalShown = 0;
+
+      Object.entries(FACTIONS).forEach(([key, meta]) => {
+        if (activeFaction !== 'all' && activeFaction !== key) return;
+
+        const items = ROLES.filter(r => r.f === key && (!q || r.n.toLowerCase().includes(q) || r.d.toLowerCase().includes(q)));
+        if (items.length === 0) return;
+        totalShown += items.length;
+
+        const a = ACCENTS[meta.accent];
+
+        const section = document.createElement('section');
+        section.className = 'fade-in';
+        section.id = 'section-' + key;
+        section.innerHTML = `
+          <div class="faction-hero h-52 md:h-64 border ${a.border}">
+            <img src="${meta.image}" alt="${meta.label}" loading="lazy" />
+            <div class="overlay"></div>
+            <div class="label">
+              <div class="flex items-center gap-3 mb-1">
+                <span class="inline-block w-3 h-3 rounded-full ${a.tag}"></span>
+                <span class="text-xs uppercase tracking-widest text-slate-300">Faction</span>
+              </div>
+              <h2 class="text-3xl md:text-4xl font-black">${meta.label}</h2>
+              <p class="text-sm text-slate-300 mt-1 max-w-2xl">${meta.desc}</p>
+              <div class="text-xs text-slate-400 mt-2">${items.length} 役職</div>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-5" id="grid-${key}"></div>
+        `;
+        sectionsEl.appendChild(section);
+
+        const grid = section.querySelector('#grid-' + key);
+        items.forEach(r => {
+          const card = document.createElement('article');
+          card.className = `role-card rounded-xl border ${a.border} bg-slate-900/60 p-4`;
+          const shortLabel = meta.label.replace('陣営','').replace(/\s*\(.*\)/,'');
+          card.innerHTML = `
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <h3 class="font-bold text-base md:text-lg leading-tight">${highlight(r.n, q)}</h3>
+              <span class="shrink-0 text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded border ${a.badge}">${shortLabel}</span>
+            </div>
+            <p class="text-sm text-slate-300 leading-relaxed">${highlight(r.d, q)}</p>
+          `;
+          grid.appendChild(card);
+        });
+      });
+
+      emptyEl.classList.toggle('hidden', totalShown > 0);
+      sectionsEl.classList.toggle('hidden', totalShown === 0);
+    }
+
+    document.querySelectorAll('#filter-buttons .filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeFaction = btn.dataset.faction;
+        document.querySelectorAll('#filter-buttons .filter-btn').forEach(b => b.classList.remove('ring-2','ring-offset-2','ring-offset-slate-950','ring-white/40'));
+        btn.classList.add('ring-2','ring-offset-2','ring-offset-slate-950','ring-white/40');
+        render();
+      });
+    });
+    searchEl.addEventListener('input', render);
+
+    document.querySelector('[data-faction="all"]').classList.add('ring-2','ring-offset-2','ring-offset-slate-950','ring-white/40');
+    render();
+  </script>
+</body>
+</html>
